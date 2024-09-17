@@ -6,7 +6,7 @@ Hi, my name is Amber.
 Sprout is a community-focused crowdfunding platform dedicated to supporting conservation and outdoor recreation projects. Whether developing new parks, restoring rivers and wildlife habitats, or creating outdoor spaces that inspire future generations, Sprout empowers communities and public land managers to bring their visions to life. By connecting passionate individuals with meaningful environmental projects, we help ensure a greener, more accessible outdoors for everyone.
 
 ### Intended Audience/User Stories
-Sprout is intended for people who share a vested interest in preserving natural spaces and enhancing outdoor recreation for current and future generations. Sprout can be used as a platform to raise donation towards charities or launch crowdfunding campaigns for local conservation and outdoor projects.
+Sprout is intended for people who share a vested interest in preserving natural spaces and enhancing outdoor recreation for current and future generations. Sprout can be used as a platform to raise donation towards charities of interest or launch crowdfunding campaigns for local conservation and outdoor projects.
 
 ### Front End Pages/Functionality
 - {{ A page on the front end }}
