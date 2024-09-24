@@ -25,6 +25,7 @@ class ProjectList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+
 class ProjectDetail(APIView):
     def get_object(self, pk):
         try:
@@ -37,3 +38,11 @@ class ProjectDetail(APIView):
         project = self.get_object(pk)
         serializer = ProjectSerializer(project)
         return Response(serializer.data)
+    
+    def patch(self, request, pk):
+        project = self.get_object(pk)
+        serializer = ProjectSerializer(project, data=request.data, partial=True)  # `partial=True` allows partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
