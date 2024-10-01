@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from .models import Project, Pledge
+from users .models import CustomUser
 from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer
 
 class ProjectList(APIView):
@@ -14,12 +15,17 @@ class ProjectList(APIView):
     
     def post(self,request):
         serializer = ProjectSerializer(data=request.data)
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Invalid token header. No credentials provided"},
+                status=status.HTTP_401_UNAUTHORIZED
+                            )
         if serializer.is_valid():
             serializer.save(owner=request.user)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
-            )
+                )
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
