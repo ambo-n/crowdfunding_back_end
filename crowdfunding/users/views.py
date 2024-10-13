@@ -1,13 +1,15 @@
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status,permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer, CustomUserDetailSerializer
+from .permission import IsAdminorLimitView
 
 class CustomUserList(APIView):
+    permission_classes = [IsAdminorLimitView]
     def get(self,request):
         users = CustomUser.objects.all()
         serializers=CustomUserSerializer(users, many=True)
@@ -35,7 +37,7 @@ class CustomUserDetail(APIView):
     
     def get(self, request, pk):
         user = self.get_object(pk)
-        serializer = CustomUserSerializer(user)
+        serializer = CustomUserDetailSerializer(user)
         return Response(serializer.data)
 
 class CustomAuthToken(ObtainAuthToken):
