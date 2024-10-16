@@ -6,7 +6,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
 from .serializers import CustomUserSerializer, CustomUserDetailSerializer
-from .permission import IsAdminorLimitView, OnlyAdminCanDelete
+from .permission import IsAdminorLimitView, OnlyAdminCanDelete, IsOwnerorAdmin
 
 class CustomUserList(APIView):
     permission_classes = [IsAdminorLimitView]
@@ -29,7 +29,8 @@ class CustomUserList(APIView):
         )
 
 class CustomUserDetail(APIView):
-    permission_classes =[OnlyAdminCanDelete]
+    permission_classes =[OnlyAdminCanDelete,
+                         IsOwnerorAdmin]
     def get_object(self,pk):
         try:
             return CustomUser.objects.get(pk=pk)
@@ -43,6 +44,7 @@ class CustomUserDetail(APIView):
     
     def put(self,request,pk):
         user = self.get_object(pk)
+        self.check_object_permissions(request, user)
         serializer = CustomUserDetailSerializer(
             instance=user,
             data=request.data,
