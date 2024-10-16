@@ -6,7 +6,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .models import CustomUser
 from .serializers import CustomUserSerializer, CustomUserDetailSerializer
-from .permission import IsAdminorLimitView
+from .permission import IsAdminorLimitView, OnlyAdminCanDelete
 
 class CustomUserList(APIView):
     permission_classes = [IsAdminorLimitView]
@@ -29,6 +29,7 @@ class CustomUserList(APIView):
         )
 
 class CustomUserDetail(APIView):
+    permission_classes =[OnlyAdminCanDelete]
     def get_object(self,pk):
         try:
             return CustomUser.objects.get(pk=pk)
@@ -54,6 +55,11 @@ class CustomUserDetail(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+    def delete(self,request,pk):
+        user = self.get_object(pk)
+        self.check_object_permissions(request, user)
+        user.delete()
+        return Response(status= status.HTTP_204_NO_CONTENT)
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):

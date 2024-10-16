@@ -9,3 +9,9 @@ class IsAdminorLimitView(permissions.BasePermission):
                 return False
         else:
             return True
+
+class OnlyAdminCanDelete(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method == 'DELETE':
+            return request.user.is_staff
+        return True
