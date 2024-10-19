@@ -36,3 +36,14 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.owner = validated_data.get('owner', instance.owner)
         instance.save()
         return instance
+    
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = apps.get_model('projects.Category')
+        fields='__all__'
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = apps.get_model('projects.Category')
+        fields='__all__'
+    projects = ProjectSerializer(many=True, read_only=True)

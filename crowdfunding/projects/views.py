@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from django.http import Http404
-from .models import Project, Pledge
-from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, PledgeDetailSerializer
+from .models import Project, Pledge, Category
+from .serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, PledgeDetailSerializer, CategorySerializer, CategoryDetailSerializer
 from .permissions import IsOwnerOrReadOnly, IsAdminorLimitView, IsSupporterOrReadOnly
 
 class ProjectList(APIView):
@@ -32,7 +32,34 @@ class ProjectList(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
+class CategoryList(APIView):
+    def get(self,request):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
+    def post(self,request):
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+class CategoryDetail(APIView):
+    def get_object(self,pk):
+        try:
+            category = Category.objects.get(pk=pk)
+            return category
+        except Category.DoesNotExist:
+            return Http404
+    def get(self, request, pk):
+        category = self.get_object(pk)
+        serializer = CategoryDetailSerializer(category)
+        return Response(serializer.data)
 class ProjectDetail(APIView):
 
     permission_classes =[
@@ -71,7 +98,7 @@ class ProjectDetail(APIView):
         project = self.get_object(pk)
         project.delete()
         return Response(status= status.HTTP_204_NO_CONTENT)
-    
+
 class PledgeList(APIView):
     permission_classes =[IsAdminorLimitView,
                          permissions.IsAuthenticatedOrReadOnly]
