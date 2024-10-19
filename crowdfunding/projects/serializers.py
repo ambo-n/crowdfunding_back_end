@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.apps import apps
+from .models import Category
 
 class PledgeSerializer(serializers.ModelSerializer):
     support = serializers.ReadOnlyField(source='support.id')
@@ -18,6 +19,7 @@ class PledgeDetailSerializer(PledgeSerializer):
         return instance
 class ProjectSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True)
 
     class Meta:
         model = apps.get_model('projects.Project')
@@ -34,6 +36,9 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.is_open = validated_data.get('is_open', instance.is_open)
         instance.date_created = validated_data.get('date_created', instance.date_created)
         instance.owner = validated_data.get('owner', instance.owner)
+        if 'category' in validated_data:
+            category_data = validated_data.pop('category')
+            instance.category.set(category_data)
         instance.save()
         return instance
     
@@ -47,3 +52,8 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         model = apps.get_model('projects.Category')
         fields='__all__'
     projects = ProjectSerializer(many=True, read_only=True)
+
+    def update(self, instance, validated_data):
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+        return instance
