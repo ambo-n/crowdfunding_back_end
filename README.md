@@ -43,7 +43,7 @@ Sprout is intended for people who share a vested interest in preserving natural 
 
 
 ### DB Schema
-(./ERD.png)
+![]( {{ ./ERD.png }} )
 
 - [x] A link to the deployed project. - https://sprout-ambon-63b8f1ecb262.herokuapp.com
 - [ ] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint.
