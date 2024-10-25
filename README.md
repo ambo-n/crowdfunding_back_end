@@ -43,12 +43,28 @@ Sprout is intended for people who share a vested interest in preserving natural 
 
 
 ### DB Schema
-![]( {{ ./ERD.png }} )
+![Entity Relation Diagram for Sprout](./images/ERD.png)
 
+### GET a list of all available projects
+![A screenshot of Insomnia, demonstrating a successful GET method for project endpoint](./images/GET_ALL_PROJECTS.png)
+
+### POST method for making a pledge
+![A screenshot of Insomnia, demonstrating a successful POST method for a pledge endpoint](./images/post_pledge.png)
+![Confirming new pledge show up with looking at the ProjectDetail endpoint](./images/project_and_pledge.png)
+
+### Token
+![A screenshot of Insomnia, demonstrating a token being returned.](./images/token.png)
+
+### Step-by-step instruction to register a new user and create a new project
+![1. Create a new user by entering the username, email and password fields in json format via POST method to /users/ endpoint](./images/creating_new_user.png)
+![2. Log in as a user via POST request to /api-token-auth/ endpoint to retrieve a token](./images/login.png)
+![3. Copy the token from step 2 into the Auth tab in Insomnia](./images/addtoken.png)
+![4. Make a POST request to /projects/ endpoint with the required fields i.e. "title","goal","image","is_open" and "category" filled out](./images/new_project_creation.png)
+
+### README requirements
 - [x] A link to the deployed project. - https://sprout-ambon-63b8f1ecb262.herokuapp.com
-- [ ] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint.
-
-- [ ] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
-- [ ] A screenshot of Insomnia, demonstrating a token being returned.
-- [ ] Step by step instructions for how to register a new user and create a new project (i.e. endpoints and body data).
-- [ ] Your refined API specification and Database Schema.
+- [x] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint.
+- [x] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
+- [x] A screenshot of Insomnia, demonstrating a token being returned.
+- [x] Step by step instructions for how to register a new user and create a new project (i.e. endpoints and body data).
+- [X] Your refined API specification and Database Schema.
