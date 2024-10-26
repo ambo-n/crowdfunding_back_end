@@ -75,3 +75,4 @@ class CustomAuthToken(ObtainAuthToken):
             'user_id': user.id,
             'email':user.email,
         })
+    
