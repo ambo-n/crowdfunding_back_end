@@ -9,7 +9,7 @@ from .serializers import CustomUserSerializer, CustomUserDetailSerializer
 from .permission import IsAdminorLimitView, OnlyAdminCanDelete, IsOwnerorAdmin
 
 class CustomUserList(APIView):
-    # permission_classes = [IsAdminorLimitView]
+    permission_classes = [IsAdminorLimitView]
     def get(self,request):
         users = CustomUser.objects.all()
         serializers=CustomUserSerializer(users, many=True)
