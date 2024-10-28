@@ -135,6 +135,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+GOOGLE_API_KEY ='AIzaSyDTuNajKG151zdr6gptt0DqSwmorWE5N5U'
+BASE_COUNTRY = 'AU'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
