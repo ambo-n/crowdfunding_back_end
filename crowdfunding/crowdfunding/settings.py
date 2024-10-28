@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+from decouple import config
 from dotenv import load_dotenv
 
 load_dotenv("../.env")
@@ -135,7 +136,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-GOOGLE_API_KEY ='AIzaSyDTuNajKG151zdr6gptt0DqSwmorWE5N5U'
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 BASE_COUNTRY = 'AU'
 
 # Static files (CSS, JavaScript, Images)
