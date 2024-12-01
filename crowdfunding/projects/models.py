@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 import os
 
-# class Category(models.Model):
-#     description = models.CharField(max_length=200)
+class Category(models.Model):
+    description = models.CharField(max_length=200)
 
 class Project(models.Model):
     title = models.CharField(max_length=200)
@@ -51,7 +51,7 @@ class Project(models.Model):
         on_delete=models.CASCADE,
         related_name='owned_projects')
     
-    # category = models.ManyToManyField(Category, related_name='projects')
+    category = models.ManyToManyField(Category, related_name='projects')
 
     def save(self, **kwargs):
 
