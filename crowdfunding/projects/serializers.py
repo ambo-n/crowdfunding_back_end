@@ -4,6 +4,7 @@ from .models import Category
 
 class PledgeSerializer(serializers.ModelSerializer):
     support = serializers.ReadOnlyField(source='support.id')
+    username = serializers.ReadOnlyField(source='support.username')
     class Meta:
         model = apps.get_model('projects.Pledge')
         fields ='__all__'
