@@ -1,21 +1,40 @@
-# Crowdfunding Back End
-Hi, my name is Amber. 
+# Crowdfunding Back End - Welcome to Sprout
+
+Sprout is a full-stack crowdfunding platform built with a Python/Django backend and a JavaScript/React frontend.
+
+## Features:
+
+Within this application, users can:
+
+- Sign up and log in.
+- Create, update, and delete their own campaigns.
+- Make pledges to existing projects.
+- View all existing projects.
+
+## Key Details:
+
+- The project model integrates with the Google Maps API to retrieve longitude and latitude coordinates when users enter an address for their fundraising campaign.
+- Suitable user permissions are implemented to ensure actions performed within the application are secure and appropriately restricted.
 
 ## Planning:
+
 ### Concept/Name
+
 Sprout is a community-focused crowdfunding platform dedicated to supporting conservation and outdoor recreation projects. Whether developing new parks, restoring rivers and wildlife habitats, or creating outdoor spaces that inspire future generations, Sprout empowers communities and public land managers to bring their visions to life. By connecting passionate individuals with meaningful environmental projects, we help ensure a greener, more accessible outdoors for everyone.
 
 ### Intended Audience/User Stories
+
 Sprout is intended for people who share a vested interest in preserving natural spaces and enhancing outdoor recreation for current and future generations. Sprout can be used as a platform to raise donation towards charities of interest or launch crowdfunding campaigns for local conservation and outdoor projects.
 
 ### Front End Pages/Functionality
+
 - {{ A page on the front end }}
-    - {{ A list of dot-points showing functionality is available on this page }}
-    - {{ etc }}
-    - {{ etc }}
+  - {{ A list of dot-points showing functionality is available on this page }}
+  - {{ etc }}
+  - {{ etc }}
 - {{ A second page available on the front end }}
-    - {{ Another list of dot-points showing functionality }}
-    - {{ etc }}
+  - {{ Another list of dot-points showing functionality }}
+  - {{ etc }}
 
 ### API Spec
 
@@ -41,31 +60,36 @@ Sprout is intended for people who share a vested interest in preserving natural 
 | /users/pk/             | PUT         | Update user detail                                                   | {<br>”email”:”email1@mail.com”,<br>}                                                                                                                                                                                                                                      | 200                      | Admin/account owner                                                    |
 | /users/pk/             | DELETE      | Delete a user                                                        |                                                                                                                                                                                                                                                                           | 204                      | Admin                                                                  |
 
-
 ### DB Schema
+
 ![Entity Relation Diagram for Sprout](./images/ERD.png)
 
 ### GET a list of all available projects
+
 ![A screenshot of Insomnia, demonstrating a successful GET method for project endpoint](./images/GET_ALL_PROJECTS.png)
 
 ### POST method for making a pledge
+
 A screenshot of Insomnia, demonstrating a successful POST method for a pledge endpoint ![](./images/post_pledge.png)
 
 Confirming new pledge show up by looking at the ProjectDetail endpoint ![](./images/project_and_pledge.png)
 
 ### Token
+
 A screenshot of Insomnia, demonstrating a token being returned.![](./images/token.png)
 
 ### Step-by-step instruction to register a new user and create a new project
+
 1. Create a new user by entering the username, email and password fields in json format via POST method to /users/ endpoint ![](./images/creating_new_user.png)
 2. Log in as a user via POST request to /api-token-auth/ endpoint to retrieve a token ![](./images/login.png)
 3. Copy the token from step 2 into the Auth tab in Insomnia ![](./images/addtoken.png)
 4. Make a POST request to /projects/ endpoint with the required fields i.e. "title","goal","image","is_open" and "category" filled out ![](./images/new_project_creation.png)
 
 ### README requirements
+
 - [x] A link to the deployed project. - https://sprout-ambon-63b8f1ecb262.herokuapp.com
 - [x] A screenshot of Insomnia, demonstrating a successful GET method for any endpoint.
 - [x] A screenshot of Insomnia, demonstrating a successful POST method for any endpoint.
 - [x] A screenshot of Insomnia, demonstrating a token being returned.
 - [x] Step by step instructions for how to register a new user and create a new project (i.e. endpoints and body data).
-- [X] Your refined API specification and Database Schema.
+- [x] Your refined API specification and Database Schema.
