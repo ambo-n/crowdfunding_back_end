@@ -5,6 +5,7 @@ from .models import Category
 class PledgeSerializer(serializers.ModelSerializer):
     support = serializers.ReadOnlyField(source='support.id')
     username = serializers.ReadOnlyField(source='support.username')
+    project_title = serializers.ReadOnlyField(source='project.title')
     class Meta:
         model = apps.get_model('projects.Pledge')
         fields ='__all__'
@@ -37,6 +38,10 @@ class ProjectDetailSerializer(ProjectSerializer):
         instance.is_open = validated_data.get('is_open', instance.is_open)
         instance.date_created = validated_data.get('date_created', instance.date_created)
         instance.owner = validated_data.get('owner', instance.owner)
+        instance.address = validated_data.get('address', instance.address)
+        instance.suburb = validated_data.get('suburb', instance.suburb)
+        instance.postcode = validated_data.get('postcode', instance.postcode)
+        instance.state = validated_data.get('state', instance.state)
         if 'category' in validated_data:
             category_data = validated_data.pop('category')
             instance.category.set(category_data)
