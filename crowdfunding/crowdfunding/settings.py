@@ -147,7 +147,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-GOOGLE_API_KEY = config('GOOGLE_API_KEY')
+GOOGLE_API_KEY = config('GOOGLE_API_KEY', default="" )
 BASE_COUNTRY = 'AU'
 
 # Static files (CSS, JavaScript, Images)
