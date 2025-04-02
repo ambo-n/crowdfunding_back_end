@@ -96,13 +96,24 @@ WSGI_APPLICATION = 'crowdfunding.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
+if os.environ.get("GITHUB_ACTIONS"):
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'test_db'),
+        'USER': os.environ.get('POSTGRES_USER', 'test_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'test_password'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
