@@ -48,9 +48,9 @@ jobs:
           cd crowdfunding
           python manage.py migrate
 
-      - name: Run tests with pytest
+      - name: Run tests
         env:
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
         run: |
           cd crowdfunding
-          pytest
+          python manage.py test
