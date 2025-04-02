@@ -42,6 +42,7 @@ jobs:
 
       - name: Run migrations
         env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
         run: |
           cd crowdfunding
