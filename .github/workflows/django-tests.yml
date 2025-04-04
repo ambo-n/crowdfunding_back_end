@@ -48,9 +48,9 @@ jobs:
           cd crowdfunding
           python manage.py migrate
 
-      - name: Run tests
+      - name: Run tests with coverage
         env:
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
         run: |
           cd crowdfunding
-          python manage.py test
+          pytest --cov=crowdfunding --cov-report=term-missing
