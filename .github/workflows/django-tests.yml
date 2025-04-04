@@ -53,4 +53,4 @@ jobs:
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
         run: |
           cd crowdfunding
-          pytest --cov=crowdfunding --cov-report=term-missing
+          pytest --cov=crowdfunding/projects --cov-report=term-missing
