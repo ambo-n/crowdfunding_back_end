@@ -55,7 +55,7 @@ jobs:
           cd crowdfunding
           pytest --cov=crowdfunding --cov-report=term-missing
           TEST_RESULT=$?
-          if [ $TEST_RESULT -eq 0 ]; then
+          if [ "$TEST_RESULT" -eq 0 ]; then
             echo "✅ All tests passed!"
           else
             echo "❌ Some tests failed!"
