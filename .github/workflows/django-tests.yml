@@ -53,4 +53,10 @@ jobs:
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
         run: |
           cd crowdfunding
-          pytest --cov=crowdfunding/projects --cov-report=term-missing
+          pytest --cov=crowdfunding --cov-report=term-missing
+          TEST_RESULT=$?
+          if [ $TEST_RESULT -eq 0 ]; then
+            echo "✅ All tests passed!"
+          else
+            echo "❌ Some tests failed!"
+          fi
