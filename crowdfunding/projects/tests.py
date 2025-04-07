@@ -256,6 +256,13 @@ class ProjectAPITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("Test Project", response.json()[0]["title"])
     
+    def test_get_single_project(self):
+        url = reverse("project-detail",kwargs={"pk":self.project.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"],"Test Project")
+        self.assertEqual(len(response.data),17)
+        
     def test_create_project_authenticated(self):
         self.client.force_authenticate(user=self.user)
         url = reverse("project-list")
@@ -312,3 +319,44 @@ class ProjectAPITest(TestCase):
         self.assertEqual(response.data["category"][0], "This field is required.")
         self.assertIn("goal", response.data)
         self.assertEqual(response.data["goal"][0], "This field is required.")
+    
+    def test_update_project(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("project-detail", kwargs={"pk": self.project.id})
+        data = {
+            "description":"Updated description for the sample project",
+            "goal":10000
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertTrue(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["goal"], 10000)
+        self.assertEqual(response.data["description"], "Updated description for the sample project")
+        self.assertEqual(response.data["title"], "Test Project")
+        self.assertEqual(response.data["address"],"37 Halsey Road")
+        
+    def test_delete_project(self):
+        self.client.force_authenticate(user=self.user)
+        post_url = reverse("project-list")
+        data = {
+            "title": "Project to delete",
+            "description": "A new project description",
+            "goal": 500,
+            "image": "https://example.com/new.jpg",
+            "is_open": True,
+            "address": "37 Halsey Road",
+	        "suburb": "Tunkalilla",
+	        "postcode": "5203",
+	        "state": "SA",
+            "category": [self.category.id],
+        }
+        post_response = self.client.post(post_url,data,format="json")
+        self.assertEqual(post_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(post_response.data["title"], "Project to delete")
+        delete_url = reverse("project-detail", kwargs={"pk":post_response.data["id"]})
+        delete_response = self.client.delete(delete_url)
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+        get_response = self.client.get(delete_url)
+        self.assertEqual(get_response.status_code, status.HTTP_404_NOT_FOUND)
+        project_count_after_deletion = Project.objects.count()
+        self.assertEqual(project_count_after_deletion,1)
+
