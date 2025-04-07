@@ -32,62 +32,6 @@ class ProjectModelTest(TestCase):
         self.assertEqual(project.owner.username, "testuser")
         self.assertEqual(project.category.count(), 1)
 
-class ProjectSerializerTest(TestCase):
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
-        self.category = Category.objects.create(description= "Test_category")
-        self.project = Project.objects.create(
-            title="Test Project",
-            description="A sample project",
-            goal=5000,
-            image="https://example.com/image.jpg",
-            is_open=True,
-            address= "37 Halsey Road",
-	        suburb= "Tunkalilla",
-	        postcode= 5203,
-	        state="SA",
-            owner=self.user,
-        )
-        self.project.category.add(self.category)
-
-    def test_project_serializer(self):
-        serializer = ProjectSerializer(self.project)
-        data = serializer.data
-        self.assertEqual(data["title"],"Test Project")
-        self.assertEqual(data["owner"], self.user.id)
-        self.assertEqual(data["category"], [self.category.id])
-    
-    def test_project_deserialization(self):
-        data ={
-            "title":"Test Project",
-            "description": "A sample project",
-            "goal": 5000,
-            "image":"https://example.com/image.jpg",
-            "is_open": True,
-            "address": "37 Halsey Road",
-	        "suburb": "Tunkalilla",
-	        "postcode": 5203,
-	        "state":"SA",
-            "owner": self.user.id,
-            "category": [self.category.id]
-        }
-        serializer = ProjectSerializer(data=data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-    
-    def test_project_update_serializer(self):
-        project = Project.objects.get(pk=self.project.id)
-        project.title="Test Project Update"
-        project.description="An updated descriptor"
-        project.goal=80
-        project.is_open=False
-        project.save()
-        
-        serializer = ProjectDetailSerializer(project)
-        data = serializer.data
-        self.assertEqual(data["title"],"Test Project Update")
-        self.assertEqual(data["description"], "An updated descriptor")
-        self.assertFalse(data["is_open"])
-    
 class PledgeModelTest(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="testuser", password="password123")
@@ -197,6 +141,64 @@ class PledgeSerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data["pledges"][0]["amount"], 5000)
         self.assertEqual(len(data["pledges"]), 2)
+
+class ProjectSerializerTest(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.category = Category.objects.create(description= "Test_category")
+        self.project = Project.objects.create(
+            title="Test Project",
+            description="A sample project",
+            goal=5000,
+            image="https://example.com/image.jpg",
+            is_open=True,
+            address= "37 Halsey Road",
+	        suburb= "Tunkalilla",
+	        postcode= 5203,
+	        state="SA",
+            owner=self.user,
+        )
+        self.project.category.add(self.category)
+
+    def test_project_serializer(self):
+        serializer = ProjectSerializer(self.project)
+        data = serializer.data
+        self.assertEqual(data["title"],"Test Project")
+        self.assertEqual(data["owner"], self.user.id)
+        self.assertEqual(data["category"], [self.category.id])
+    
+    def test_project_deserialization(self):
+        data ={
+            "title":"Test Project",
+            "description": "A sample project",
+            "goal": 5000,
+            "image":"https://example.com/image.jpg",
+            "is_open": True,
+            "address": "37 Halsey Road",
+	        "suburb": "Tunkalilla",
+	        "postcode": 5203,
+	        "state":"SA",
+            "owner": self.user.id,
+            "category": [self.category.id]
+        }
+        serializer = ProjectSerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+    
+    def test_project_update_serializer(self):
+        project = Project.objects.get(pk=self.project.id)
+        project.title="Test Project Update"
+        project.description="An updated descriptor"
+        project.goal=80
+        project.is_open=False
+        project.save()
+        
+        serializer = ProjectDetailSerializer(project)
+        data = serializer.data
+        self.assertEqual(data["title"],"Test Project Update")
+        self.assertEqual(data["description"], "An updated descriptor")
+        self.assertFalse(data["is_open"])
+    
+
 class ProjectAPITest(TestCase):
 
     def setUp(self):
