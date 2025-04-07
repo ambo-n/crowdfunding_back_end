@@ -207,7 +207,7 @@ class CategorySerializerTest(TestCase):
         serializer = CategorySerializer(self.category)
         data = serializer.data
         self.assertEqual(data["description"], "Test Category")
-        self.assertEqual(data["id"],1)
+        self.assertEqual(data["id"],self.category.id)
     
     def test_category_deserialization(self):
         data = {
