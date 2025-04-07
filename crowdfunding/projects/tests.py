@@ -249,6 +249,7 @@ class ProjectAPITest(TestCase):
         )
         self.project.category.add(self.category)
 
+
     def test_get_projects(self):
         url = reverse("project-list")
         response = self.client.get(url)
@@ -277,7 +278,7 @@ class ProjectAPITest(TestCase):
     def test_create_project_unauthenticated(self):
         url = reverse("project-list")
         data = {
-                        "title": "New Project",
+            "title": "New Project",
             "description": "A new project description",
             "goal": 7000,
             "image": "https://example.com/new.jpg",
@@ -291,3 +292,23 @@ class ProjectAPITest(TestCase):
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(Project.objects.count(),1)
+    
+    def test_create_project_invalid(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("project-list")
+        data ={
+            "title": "New Project",
+            "description": "A new project description",
+            "image": "https://example.com/new.jpg",
+            "is_open": True,
+            "address": "37 Halsey Road",
+	        "suburb": "Tunkalilla",
+	        "postcode": "5203",
+	        "state": "SA",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("category", response.data)
+        self.assertEqual(response.data["category"][0], "This field is required.")
+        self.assertIn("goal", response.data)
+        self.assertEqual(response.data["goal"][0], "This field is required.")
