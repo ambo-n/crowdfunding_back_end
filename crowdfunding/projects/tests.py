@@ -1,6 +1,6 @@
 from django.test import TestCase
 from projects.models import Project, Category, Pledge
-from projects.serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, PledgeDetailSerializer
+from projects.serializers import ProjectSerializer, PledgeSerializer, ProjectDetailSerializer, PledgeDetailSerializer, CategorySerializer, CategoryDetailSerializer
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -31,7 +31,6 @@ class ProjectModelTest(TestCase):
         self.assertEqual(project.goal, 5000)
         self.assertEqual(project.owner.username, "testuser")
         self.assertEqual(project.category.count(), 1)
-
 class PledgeModelTest(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="testuser", password="password123")
@@ -62,9 +61,11 @@ class PledgeModelTest(TestCase):
         self.assertEqual(pledge.comment, "test pledge")
         self.assertEqual(pledge.project, self.project)
         self.assertEqual(pledge.support, self.user)
-
+class CategoryModelTest(TestCase):
+    def test_create_category(self):
+        category = Category.objects.create(description="Test category")
+        self.assertEqual(category.description, "Test category")
 class PledgeSerializerTest(TestCase):
-
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="testuser", password="password123")
         self.donor = get_user_model().objects.create_user(username="pledgemaker", password="pledger123")
@@ -198,6 +199,35 @@ class ProjectSerializerTest(TestCase):
         self.assertEqual(data["description"], "An updated descriptor")
         self.assertFalse(data["is_open"])
     
+class CategorySerializerTest(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(description="Test Category")
+
+    def test_category_serializer(self):
+        serializer = CategorySerializer(self.category)
+        data = serializer.data
+        self.assertEqual(data["description"], "Test Category")
+        self.assertEqual(data["id"],1)
+    
+    def test_category_deserialization(self):
+        data = {
+            "description":"Environment"
+        }
+        serializer = CategorySerializer(data=data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        invalid_data = {
+            "amount":5000
+        }
+        serializer2 = CategorySerializer(data=invalid_data)
+        self.assertFalse(serializer2.is_valid(), serializer2.errors)
+
+    def test_category_update(self):
+        category = Category.objects.get(pk=self.category.id)
+        category.description = "Updated test category description"
+        category.save()
+        serializer = CategoryDetailSerializer(category)
+        data = serializer.data
+        self.assertEqual(category.description, "Updated test category description")
 
 class ProjectAPITest(TestCase):
 
