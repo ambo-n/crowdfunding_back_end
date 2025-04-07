@@ -120,6 +120,7 @@ class PledgeModelTest(TestCase):
         self.assertEqual(pledge.support, self.user)
 
 class PledgeSerializerTest(TestCase):
+
     def setUp(self):
         self.user = get_user_model().objects.create_user(username="testuser", password="password123")
         self.donor = get_user_model().objects.create_user(username="pledgemaker", password="pledger123")
@@ -196,10 +197,8 @@ class PledgeSerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data["pledges"][0]["amount"], 5000)
         self.assertEqual(len(data["pledges"]), 2)
-
-
-
 class ProjectAPITest(TestCase):
+
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(username="testuser", password="password123")
