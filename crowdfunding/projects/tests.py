@@ -466,17 +466,60 @@ class PlegeAPITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(after_deletion_response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Pledge.objects.count(),0)
-
 class CategoryAPITest(TestCase):
     def setUp(self):
-        pass
+        self.client = APIClient()
+        self.category = Category.objects.create(description="Environment")
+        self.admin_user = get_user_model().objects.create_user(username="admin",password="sth134",is_staff=True, is_superuser=True)
     def test_get_category(self):
-        pass
+        url = reverse("category-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]["description"], "Environment")
+
     def test_get_a_category(self):
+        url = reverse("category-detail",kwargs={"pk":self.category.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["description"],"Environment")
+        
+    def test_create_category_valid_data(self):
+        url = reverse("category-list")
+        data ={"description":"Trail"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["description"], "Trail")
+        self.assertEqual(Category.objects.count(),2)
+
+    def test_create_category_invalid_data(self):
+        url = reverse("category-list")
+        data ={"title":"Trail"}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Category.objects.count(),1)
+    def test_update_category_valid_data(self):
+        self.client.force_authenticate(user=self.admin_user)
+        url = reverse("category-detail", kwargs={"pk":self.category.id})
+        data = {
+            "description":"Updated to Ocean"
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["description"], "Updated to Ocean")
+    def test_update_category_invalid_data(self):
+        # self.client.force_authenticate(user=self.admin_user)
+        # url = reverse("category-detail", kwargs={"pk":self.category.id})
+        # data = {
+        #     "title": "sth else"
+        # }
+        # response = self.client.put(url, data, format="json")
         pass
-    def test_create_category(self):
-        pass
-    def test_update_category(self):
-        pass
+        # self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
     def test_delete_category(self):
-        pass
+        self.client.force_authenticate(user=self.admin_user)
+        url = reverse("category-detail",kwargs={"pk":self.category.id})
+        response = self.client.delete(url)
+        get_delete_url_response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Category.objects.count(),0)
+        self.assertEqual(get_delete_url_response.status_code, status.HTTP_404_NOT_FOUND)
