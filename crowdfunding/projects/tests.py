@@ -447,9 +447,25 @@ class PlegeAPITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(invalid_url_response.status_code, status.HTTP_404_NOT_FOUND)
     def test_update_pledge(self):
-        pass
+        self.client.force_authenticate(user=self.donor)
+        url = reverse("pledge-detail", kwargs={"pk":self.pledge.id})
+        data ={
+            "comment":"updated comment for the test pledge",
+            "anonymous":True
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["comment"],"updated comment for the test pledge")
+        self.assertTrue(response.data["anonymous"])
+        self.assertEqual(Pledge.objects.count(),1)
     def test_delete_pledge(self):
-        pass
+        self.client.force_authenticate(user=self.donor)
+        url = reverse("pledge-detail", kwargs={"pk":self.pledge.id})
+        response = self.client.delete(url)
+        after_deletion_response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(after_deletion_response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Pledge.objects.count(),0)
 
 class CategoryAPITest(TestCase):
     def setUp(self):
