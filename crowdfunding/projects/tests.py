@@ -333,7 +333,7 @@ class ProjectAPITest(TestCase):
         self.assertEqual(response.data["description"], "Updated description for the sample project")
         self.assertEqual(response.data["title"], "Test Project")
         self.assertEqual(response.data["address"],"37 Halsey Road")
-        
+
     def test_delete_project(self):
         self.client.force_authenticate(user=self.user)
         post_url = reverse("project-list")
@@ -360,3 +360,107 @@ class ProjectAPITest(TestCase):
         project_count_after_deletion = Project.objects.count()
         self.assertEqual(project_count_after_deletion,1)
 
+class PlegeAPITest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.donor = get_user_model().objects.create_user(username="testdonor", password="password123")
+        self.admin_user = get_user_model().objects.create_user(username="admin", password="sth123", is_staff=True, is_superuser=True)
+        self.category = Category.objects.create(description="Environment")
+        self.project = Project.objects.create(
+            title="Test Project",
+            description="A sample project",
+            goal=5000,
+            image="https://example.com/image.jpg",
+            is_open=True,
+            address= "37 Halsey Road",
+	        suburb= "Tunkalilla",
+	        postcode= 5203,
+	        state="SA",
+            owner=self.user,
+        )
+        self.project.category.add(self.category)
+        self.pledge = Pledge.objects.create(
+            amount = 5000,
+            comment = "test pledge",
+            anonymous = False,
+            project = self.project,
+            support = self.donor
+        )
+    def test_get_pledges_authenticated(self):
+        self.client.force_authenticate(user=self.admin_user)
+        url = reverse("pledge-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["project"], self.project.id)
+    def test_get_pledges_unauthenticated(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("pledge-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
+    def test_create_pledges_authenticated(self):
+        self.client.force_authenticate(user=self.donor)
+        url = reverse("pledge-list")
+        project_url = reverse("project-detail", kwargs={"pk":self.project.id})
+        data = {
+            "amount": 1000,
+            "comment": "Bye weeds",
+            "anonymous": False,
+            "project": self.project.id,
+        }
+        response = self.client.post(url, data, format="json")
+        get_project_response = self.client.get(project_url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Pledge.objects.count(), 2)
+        self.assertEqual(len(get_project_response.data["pledges"]), 2)
+        self.assertEqual(get_project_response.data["pledges"][1]["comment"],"Bye weeds")
+        self.assertEqual(get_project_response.data["pledges"][0]["comment"],"test pledge")
+    def test_create_pledge_unauthenticated(self):
+        url = reverse("pledge-list")
+        data = {
+            "amount": 1000,
+            "comment": "Bye weeds",
+            "anonymous": False,
+            "project": self.project.id,
+        }
+        response = self.client.post(url,data,format="json")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    def test_create_pledge_invalid_data(self):
+        self.client.force_authenticate(user=self.donor)
+        url = reverse("pledge-list")
+        data ={
+            "title": "New Project",
+            "amount": 100.80,
+            "comment": "Bye weeds",
+            "anonymous": False,
+            "project": self.project.id,
+        }
+        response = self.client.post(url,data,format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_get_detail_on_one_pledge(self):
+        self.client.force_authenticate(user=self.donor)
+        url = reverse("pledge-detail", kwargs={"pk":self.pledge.id})
+        invalid_url = reverse("pledge-detail", kwargs={"pk":8})
+        response = self.client.get(url)
+        invalid_url_response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(invalid_url_response.status_code, status.HTTP_404_NOT_FOUND)
+    def test_update_pledge(self):
+        pass
+    def test_delete_pledge(self):
+        pass
+
+class CategoryAPITest(TestCase):
+    def setUp(self):
+        pass
+    def test_get_category(self):
+        pass
+    def test_get_a_category(self):
+        pass
+    def test_create_category(self):
+        pass
+    def test_update_category(self):
+        pass
+    def test_delete_category(self):
+        pass
