@@ -8,7 +8,7 @@ from rest_framework import status
 
 class ProjectModelTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.user = get_user_model().objects.create_user(username="testuser", email= "test_user@mail.com",password="password123")
         self.category = Category.objects.create(description= "Test_category")
     
     def test_create_project(self):
@@ -33,7 +33,7 @@ class ProjectModelTest(TestCase):
         self.assertEqual(project.category.count(), 1)
 class PledgeModelTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.user = get_user_model().objects.create_user(username="testuser",email= "test_user@mail.com", password="password123")
         self.category = Category.objects.create(description= "Test_category")
         self.project = Project.objects.create(
             title="Test Project",
@@ -67,8 +67,8 @@ class CategoryModelTest(TestCase):
         self.assertEqual(category.description, "Test category")
 class PledgeSerializerTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
-        self.donor = get_user_model().objects.create_user(username="pledgemaker", password="pledger123")
+        self.user = get_user_model().objects.create_user(username="testuser", email= "test_user@mail.com", password="password123")
+        self.donor = get_user_model().objects.create_user(username="pledgemaker",email= "pledge_user@mail.com", password="pledger123")
         self.category = Category.objects.create(description= "Test_category")
         self.project = Project.objects.create(
             title="Test Project",
@@ -145,7 +145,7 @@ class PledgeSerializerTest(TestCase):
 
 class ProjectSerializerTest(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.user = get_user_model().objects.create_user(username="testuser",email= "test_user@mail.com", password="password123")
         self.category = Category.objects.create(description= "Test_category")
         self.project = Project.objects.create(
             title="Test Project",
@@ -233,7 +233,7 @@ class ProjectAPITest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
+        self.user = get_user_model().objects.create_user(username="testuser",email= "test_user@mail.com", password="password123")
         self.category = Category.objects.create(description="Education")
         self.project = Project.objects.create(
             title="Test Project",
@@ -363,9 +363,9 @@ class ProjectAPITest(TestCase):
 class PlegeAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(username="testuser", password="password123")
-        self.donor = get_user_model().objects.create_user(username="testdonor", password="password123")
-        self.admin_user = get_user_model().objects.create_user(username="admin", password="sth123", is_staff=True, is_superuser=True)
+        self.user = get_user_model().objects.create_user(username="testuser",email= "test_user@mail.com", password="password123")
+        self.donor = get_user_model().objects.create_user(username="testdonor",email= "test_donor@mail.com", password="password123")
+        self.admin_user = get_user_model().objects.create_user(username="admin",email= "test_admin@mail.com", password="sth123", is_staff=True, is_superuser=True)
         self.category = Category.objects.create(description="Environment")
         self.project = Project.objects.create(
             title="Test Project",
@@ -470,7 +470,7 @@ class CategoryAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.category = Category.objects.create(description="Environment")
-        self.admin_user = get_user_model().objects.create_user(username="admin",password="sth134",is_staff=True, is_superuser=True)
+        self.admin_user = get_user_model().objects.create_user(username="admin",email= "test_admin@mail.com",password="sth134",is_staff=True, is_superuser=True)
     def test_get_category(self):
         url = reverse("category-list")
         response = self.client.get(url)
