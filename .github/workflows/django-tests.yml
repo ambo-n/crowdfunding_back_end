@@ -59,4 +59,5 @@ jobs:
             echo "✅ All tests passed!"
           else
             echo "❌ Some tests failed!"
+            exit $TEST_RESULT
           fi
