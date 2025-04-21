@@ -1,0 +1,63 @@
+name: Django Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test_user -d test_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          while ! pg_isready -h localhost -p 5432 -U testuser; do
+            echo "Waiting for PostgreSQL to be ready.."
+            sleep 1
+          done
+
+      - name: Run migrations
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
+        run: |
+          cd crowdfunding
+          python manage.py migrate
+
+      - name: Run tests with coverage
+        env:
+          DATABASE_URL: postgres://test_user:test_password@localhost:5432/test_db
+        run: |
+          cd crowdfunding
+          pytest --cov=projects --cov-report=term-missing
+          TEST_RESULT=$?
+          if [ "$TEST_RESULT" -eq 0 ]; then
+            echo "✅ All tests passed!"
+          else
+            echo "❌ Some tests failed!"
+            exit $TEST_RESULT
+          fi

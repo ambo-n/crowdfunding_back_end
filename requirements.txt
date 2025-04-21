@@ -8,3 +8,6 @@ whitenoise==6.7.0
 dj-database-url==2.2.0
 requests==2.32.3
 python-decouple==3.8
+pytest
+pytest-django
+pytest-cov

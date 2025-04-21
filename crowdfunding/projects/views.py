@@ -58,7 +58,7 @@ class CategoryDetail(APIView):
             category = Category.objects.get(pk=pk)
             return category
         except Category.DoesNotExist:
-            return Http404
+            raise Http404
     def get(self, request, pk):
         category = self.get_object(pk)
         serializer = CategoryDetailSerializer(category)
@@ -73,7 +73,9 @@ class CategoryDetail(APIView):
         )
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(
+                serializer.data,
+                status= status.HTTP_200_OK)
         return Response(
             serializer.errors,
             status = status.HTTP_400_BAD_REQUEST
@@ -128,7 +130,8 @@ class PledgeList(APIView):
     def get(self,request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerializer(pledges, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data,
+                        status=status.HTTP_200_OK)
     
     def post(self,request):
         serializer = PledgeSerializer(data=request.data)
